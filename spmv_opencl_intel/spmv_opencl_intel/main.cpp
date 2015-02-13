@@ -284,23 +284,25 @@ int call_bhsparse(const char *datasetpath)
          << " ms. Bandwidth = " << gb/(1.0e+6 * ref_time)
          << " GB/s. GFlops = " << gflop/(1.0e+6 * ref_time)  << " GFlops." << endl << endl;
 
-	
-
     memset((void *)y, 0, m * sizeof(value_type));
 
     bhsparse_spmv_opencl *bhsparse = new bhsparse_spmv_opencl();
     err = bhsparse->init_platform();
+	cout << "Initializing OpenCL platform ... ";
+    if (!err)
+        cout << "Done.\n";
+    else
+	{
+        cout << "Failed. Error code = " << err << "\n";
+		return err;
+	}
 
 	// pass opencl compile flags
 	char flags[64];
     sprintf(flags," -DUSE_DOUBLE=%ld -DTHREADBUNCH=%ld -DSEG_H=%ld -DSTEP=%ld", USE_DOUBLE, THREADBUNCH, SEG_H, STEP);
 
 	err = bhsparse->init_kernels(string(flags));
-    cout << "Initializing OpenCL platform ... ";
-    if (!err)
-        cout << "Done.\n";
-    else
-        cout << "Failed. Error code = " << err << "\n";
+    
 
 	// test CUSP v0.4.0
     call_cusp_ref(m, n, nnzA, csrRowPtrA, csrColIdxA, csrValA, x, y, y_ref);

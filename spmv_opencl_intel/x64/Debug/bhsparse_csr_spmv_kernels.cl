@@ -91,7 +91,7 @@ void SpMV_kernel(__global const int             *d_csrRowPtrA,
                  volatile __global int          *d_dirty_counter,
                  __global int                   *d_synchronizer_idx,
                  __global vT                    *d_synchronizer_val,
-                 __local vT                     *s_interres, //s_interres[][SEG_H * THREADBUNCH + SEG_H * THREADBUNCH / 16],
+                 __local vT                     *s_interres, //s_interres[][SEG_H * THREADBUNCH],
                  volatile __local vT            *s_sum, //s_sum[][THREADBUNCH],
 				 volatile __local int           *s_bs, //s_bs[][STEP+1],
                  volatile __local unsigned int  *s_ibuff, //s_bf[][THREADBUNCH+1],
@@ -137,7 +137,7 @@ void SpMV_kernel(__global const int             *d_csrRowPtrA,
         s_tail[tbunch_lid] = 0;
     }
 
-    volatile __local vT *s_interres_local = &s_interres[tbunch_lid * 17 * (SEG_H * THREADBUNCH) / 16];
+    volatile __local vT *s_interres_local = &s_interres[tbunch_lid * SEG_H * THREADBUNCH];
 
     #pragma unroll
     for (int i = 0; i < STEP; i++)
@@ -244,7 +244,7 @@ void SpMV_kernel(__global const int             *d_csrRowPtrA,
             const int x = (j * THREADBUNCH + tbunch_tid) / SEG_H;
 
             // load indices & value, and keep index in the right scope [0,nnz)
-            s_interres_local[17 * (y * THREADBUNCH + x) / 16] = candidate_idx < nnz ? d_csrValA[candidate_idx] * d_x[d_csrColIndA[candidate_idx]] : 0;
+            s_interres_local[y * THREADBUNCH + x] = candidate_idx < nnz ? d_csrValA[candidate_idx] * d_x[d_csrColIndA[candidate_idx]] : 0;
         }
 
         // step 3-1. transmit the last entry of the previous partition to this partition
@@ -275,14 +275,14 @@ void SpMV_kernel(__global const int             *d_csrRowPtrA,
 
             if (bf_bit)
             {
-                s_interres_local[17 * (lstop * THREADBUNCH + tbunch_tid) / 16] = sum;
+                s_interres_local[lstop * THREADBUNCH + tbunch_tid] = sum;
                 sum = 0;
                 lstop++;
             }
-            sum += s_interres_local[17 * (j * THREADBUNCH + tbunch_tid) / 16];
+            sum += s_interres_local[j * THREADBUNCH + tbunch_tid];
             present |= bf_bit;
         }
-        s_interres_local[17 * (lstop * THREADBUNCH + tbunch_tid) / 16] = sum;
+        s_interres_local[lstop * THREADBUNCH + tbunch_tid] = sum;
 
         int segn_scan = lstop - lstart + present;
         segn_scan = segn_scan > 0 ? segn_scan : 0;
@@ -312,7 +312,7 @@ void SpMV_kernel(__global const int             *d_csrRowPtrA,
         }
 
         // step 4-2. add scansum to segments
-        s_interres_local[17 * (lstop * THREADBUNCH + tbunch_tid) / 16] += sum;
+        s_interres_local[lstop * THREADBUNCH + tbunch_tid] += sum;
 
         // step 5. save vector_y to global
         // step 6. transmit the last entry to next partition
@@ -320,19 +320,18 @@ void SpMV_kernel(__global const int             *d_csrRowPtrA,
 
         for (int j = lstart; j <= lstop; j++)
         {
-		    const int idx = 17 * (j * THREADBUNCH + tbunch_tid) / 16;
             if (location_counter == tbunch_start)
             {
                 d_synchronizer_idx[tbunch_gid] = tbunch_start;
-                d_synchronizer_val[tbunch_gid] = s_interres_local[idx];
+                d_synchronizer_val[tbunch_gid] = s_interres_local[j * THREADBUNCH + tbunch_tid];
             }
             else
             {
-                d_y[location_counter] = s_interres_local[idx];
+                d_y[location_counter] = s_interres_local[j * THREADBUNCH + tbunch_tid];
             }
 
             if (location_counter == bs_stop)
-                s_tail[tbunch_lid] = s_interres_local[idx];
+                s_tail[tbunch_lid] = s_interres_local[j * THREADBUNCH + tbunch_tid];
 
             location_counter++;
         }

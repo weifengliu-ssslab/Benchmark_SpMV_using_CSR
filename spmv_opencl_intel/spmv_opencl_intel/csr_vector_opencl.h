@@ -80,8 +80,8 @@ csr_vector_opencl::csr_vector_opencl()
 
 int csr_vector_opencl::init_platform()
 {
-    int err = 0;
-    _profiling = true;
+    int err = CL_SUCCESS;
+    _profiling = false;
     int select_device = 0;
 
     // platform
@@ -140,7 +140,7 @@ int csr_vector_opencl::init_platform()
         err = _basicCL.getCommandQueue(&_cqLocalCommandQueue, _cxLocalContext, _cdGpuDevices[select_device]);
     if(err != CL_SUCCESS) return err;
 
-    return CL_SUCCESS;
+    return err;
 }
 
 int csr_vector_opencl::init_kernels(string compile_flags)
@@ -155,12 +155,12 @@ int csr_vector_opencl::init_kernels(string compile_flags)
     err  = _basicCL.getKernel(&_ckCSRVecSpMV, _cpCSRSpMV, "spmv_csr_vector_kernel");
     if(err != CL_SUCCESS) return err;
 
-    return CL_SUCCESS;
+    return err;
 }
 
 int csr_vector_opencl::free_platform()
 {
-    int err = 0;
+    int err = CL_SUCCESS;
 
     // free OpenCL kernels
     err = clReleaseKernel(_ckCSRVecSpMV);    if(err != CL_SUCCESS) return err;
@@ -174,7 +174,7 @@ int csr_vector_opencl::free_platform()
 
 int csr_vector_opencl::free_mem()
 {
-    int err = 0;
+    int err = CL_SUCCESS;
 
 	err = clFinish(_cqLocalCommandQueue);
 
@@ -207,7 +207,7 @@ void csr_vector_opencl::sync_device()
 int csr_vector_opencl::run_benchmark()
 
 {
-    int err = 0;
+    int err = CL_SUCCESS;
 
 	const int nnz_per_row = _nnzA / _m;
 
@@ -259,7 +259,7 @@ int csr_vector_opencl::run_benchmark()
 
 int csr_vector_opencl::get_y()
 {
-	int err = 0;
+	int err = CL_SUCCESS;
 
 #if USE_SVM_ALWAYS
     // copy svm_y to h_y
@@ -280,7 +280,7 @@ int csr_vector_opencl::prepare_mem(int m, int n, int nnzA,
                                       int *csrRowPtrA, int *csrColIdxA, value_type *csrValA,
                                       value_type *x, value_type *y)
 {
-    int err = 0;
+    int err = CL_SUCCESS;
 
     _m = m;
     _n = n;
@@ -350,8 +350,6 @@ int csr_vector_opencl::prepare_mem(int m, int n, int nnzA,
     err = clEnqueueWriteBuffer(_cqLocalCommandQueue, _d_y, CL_TRUE, 0, _m  * sizeof(value_type), _h_y, 0, NULL, NULL);
     if(err != CL_SUCCESS) return err;
 #endif
-
-    
 
     return err;
 }

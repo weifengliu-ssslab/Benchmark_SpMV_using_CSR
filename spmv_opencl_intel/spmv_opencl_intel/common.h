@@ -18,6 +18,7 @@
 #endif
 
 #define BHSPARSE_SUCCESS 0
+#define BHSPARSE_UNSUPPORTED_DEVICE -2
 
 using namespace std;
 

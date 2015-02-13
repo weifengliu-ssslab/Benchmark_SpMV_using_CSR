@@ -19,6 +19,7 @@ public:
 	void sync_device();
 
 private:
+	bool checkSVMAvailability(cl_device_id device);
     bool _profiling;
 
     // basic OpenCL variables
@@ -88,8 +89,8 @@ bhsparse_spmv_opencl::bhsparse_spmv_opencl()
 
 int bhsparse_spmv_opencl::init_platform()
 {
-    int err = 0;
-    _profiling = true;
+    int err = CL_SUCCESS;
+    _profiling = false;
     int select_device = 0;
 
     // platform
@@ -138,6 +139,16 @@ int bhsparse_spmv_opencl::init_platform()
         }
     }
 
+	if(!checkSVMAvailability(_cdGpuDevices[select_device]))
+    {
+        cout << "Cannot detect Shared Virtual Memory (SVM) capabilities of the device." << endl;
+		return BHSPARSE_UNSUPPORTED_DEVICE;
+    }
+	else
+	{
+		cout << "The device supports Shared Virtual Memory (SVM)." << endl;
+	}
+
     // Gpu context
     err = _basicCL.getContext(&_cxLocalContext, _cdGpuDevices, _numGpuDevices);
     if(err != CL_SUCCESS) return err;
@@ -149,7 +160,17 @@ int bhsparse_spmv_opencl::init_platform()
         err = _basicCL.getCommandQueue(&_cqLocalCommandQueue, _cxLocalContext, _cdGpuDevices[select_device]);
     if(err != CL_SUCCESS) return err;
 
-    return CL_SUCCESS;
+    return err;
+}
+
+bool bhsparse_spmv_opencl::checkSVMAvailability(cl_device_id device)
+{
+    cl_device_svm_capabilities caps;
+    int err = clGetDeviceInfo(device, CL_DEVICE_SVM_CAPABILITIES, sizeof(cl_device_svm_capabilities), &caps, 0 );
+
+    // Coarse-grained buffer SVM should be available on any OpenCL 2.0 device.
+    // So it is either not an OpenCL 2.0 device or it must support coarse-grained buffer SVM:
+    return err == CL_SUCCESS && (caps & CL_DEVICE_SVM_COARSE_GRAIN_BUFFER);
 }
 
 int bhsparse_spmv_opencl::init_kernels(string compile_flags)
@@ -164,12 +185,12 @@ int bhsparse_spmv_opencl::init_kernels(string compile_flags)
     err  = _basicCL.getKernel(&_ckCSRSpMV, _cpCSRSpMV, "SpMV_kernel");
     if(err != CL_SUCCESS) return err;
 
-    return CL_SUCCESS;
+    return err;
 }
 
 int bhsparse_spmv_opencl::free_platform()
 {
-    int err = 0;
+    int err = CL_SUCCESS;
 
     // free OpenCL kernels
     err = clReleaseKernel(_ckCSRSpMV);    if(err != CL_SUCCESS) return err;
@@ -180,10 +201,9 @@ int bhsparse_spmv_opencl::free_platform()
     return err;
 }
 
-
 int bhsparse_spmv_opencl::free_mem()
 {
-    int err = 0;
+    int err = CL_SUCCESS;
 
 	err = clFinish(_cqLocalCommandQueue);
 
@@ -224,7 +244,7 @@ void bhsparse_spmv_opencl::sync_device()
 int bhsparse_spmv_opencl::run_benchmark()
 
 {
-    int err = 0;
+    int err = CL_SUCCESS;
 
     _threadbunch_per_block = THREADGROUP / THREADBUNCH;
 
@@ -258,7 +278,7 @@ int bhsparse_spmv_opencl::run_benchmark()
     err |= clSetKernelArgSVMPointer(_ckCSRSpMV, 6,  _svm_dirty_counter);
     err |= clSetKernelArgSVMPointer(_ckCSRSpMV, 7,  _svm_synchronizer_idx);
     err |= clSetKernelArgSVMPointer(_ckCSRSpMV, 8,  _svm_synchronizer_val);
-    err |= clSetKernelArg(_ckCSRSpMV, 9, sizeof(value_type)  * (_threadbunch_per_block * (SEG_H * THREADBUNCH + SEG_H * THREADBUNCH / 16)), NULL);
+    err |= clSetKernelArg(_ckCSRSpMV, 9, sizeof(value_type)  * (_threadbunch_per_block * SEG_H * THREADBUNCH), NULL);
     err |= clSetKernelArg(_ckCSRSpMV, 10, sizeof(value_type) * (_threadbunch_per_block * THREADBUNCH), NULL);
 	err |= clSetKernelArg(_ckCSRSpMV, 11, sizeof(cl_int)     * (_threadbunch_per_block * (STEP + 1)), NULL);
     err |= clSetKernelArg(_ckCSRSpMV, 12, sizeof(cl_uint)    * (_threadbunch_per_block * (THREADBUNCH+1)), NULL);
@@ -380,7 +400,7 @@ int bhsparse_spmv_opencl::run_benchmark()
 
 int bhsparse_spmv_opencl::get_y()
 {
-	int err = 0;
+	int err = CL_SUCCESS;
 
     // copy svm_y to h_y
 	err = clEnqueueSVMMap(_cqLocalCommandQueue, CL_TRUE, CL_MAP_READ, _svm_y, _m * sizeof(value_type), 0, 0, 0);
@@ -394,7 +414,7 @@ int bhsparse_spmv_opencl::prepare_mem(int m, int n, int nnzA,
                                       int *csrRowPtrA, int *csrColIdxA, value_type *csrValA,
                                       value_type *x, value_type *y)
 {
-    int err = 0;
+    int err = CL_SUCCESS;
 
     _m = m;
     _n = n;

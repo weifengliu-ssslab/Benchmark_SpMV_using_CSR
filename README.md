@@ -19,7 +19,7 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 - Benchmarking
 
-1. Open visual studio solution ``spmv_opencl_intel.sln`` in folder ``spmv_opencl_intel``. 
+1. Open Visual Studio solution ``spmv_opencl_intel.sln`` in folder ``spmv_opencl_intel``. 
 
 2. Make sure `Debug` and `x64` in the Visual Studio IDE are selected.
 

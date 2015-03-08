@@ -42,10 +42,10 @@ typedef float   value_type;
 // STEP should be less than THREADBUNCH
 
 #define THREADBUNCH  8
-#define THREADGROUP  64
+#define THREADGROUP  32
 
 #define SEG_H        16
-#define STEP         7
+#define STEP         6
 
 // timing functions
 // see http://stackoverflow.com/questions/10905892/equivalent-of-gettimeday-for-windows

@@ -1,6 +1,6 @@
 # SpMV on Heterogeneous Processors using the CSR Format
 
-This is the source code of paper "Speculative Segmented Sum for Sparse Matrix-Vector Multiplication on Heterogeneous Processors" submitted to "Parallel Computing", an Elsevier journal.
+This is the source code of paper "Speculative Segmented Sum for Sparse Matrix-Vector Multiplication on Heterogeneous Processors" submitted to Elsevier journal "Parallel Computing".
 
 Contact: Weifeng Liu (weifeng.liu _at_ nbi.ku.dk) and/or Brian Vinter (vinter _at_ nbi.ku.dk).
 
@@ -25,14 +25,14 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 3. Build the project.
 
-4. Got to folder ``x64/Debug`` and run the generated executable file with an arguement (filename of the benchmark matrix in the Matrix Market format). E.g. ``spmv.exe D:\matrices\filename.mtx``
+4. Got to folder ``x64/Debug`` and run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g. ``spmv.exe D:\matrices\filename.mtx``
 
 <br><hr>
 <h3>AMD platform</h3>
 
 - Prerequisites
 
-1. processor: AMD Kaveri or above, 
+1. Processor: AMD Kaveri or above, 
 
 2. OS: Ubuntu or other Linux versions, 
 
@@ -40,18 +40,18 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 - Benchmarking
 
-1. Make sure ``Makefile`` in folder ``spmv_opencl_amd`` has corrected pathes. 
+1. Make sure ``Makefile`` in folder ``spmv_opencl_amd`` has corrected paths. 
 
 2. Run ``make USE_DOUBLE=0`` or ``make USE_DOUBLE=1`` for building single precision or double precision SpMV.
 
-3. Run the generated executable file with an arguement (filename of the benchmark matrix in the Matrix Market format). E.g. ``./spmv /home/user/Downloads/matrices/filename.mtx``
+3. Run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g. ``./spmv /home/user/Downloads/matrices/filename.mtx``
  
 <br><hr>
 <h3>nVidia platform</h3>
 
 - Prerequisites
 
-1. processor: nVidia Tegra K1 or above, 
+1. Processor: nVidia Tegra K1 or above, 
 
 2. OS: Ubuntu Linux 14.04 or above, 
 
@@ -59,10 +59,10 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 - Benchmarking
 
-1. Make sure ``Makefile`` in folder ``spmv_cuda`` has corrected pathes. 
+1. Make sure ``Makefile`` in folder ``spmv_cuda`` has corrected paths. 
 
 2. Make sure ``Makefile`` has proper shader model (e.g., ``-arch=sm_32``) for nvcc compiler.
 
 3. Run ``make USE_DOUBLE=0`` or ``make USE_DOUBLE=1`` for building single precision or double precision SpMV.
 
-4. Run the generated executable file with an arguement (filename of the benchmark matrix in the Matrix Market format). E.g. ``./spmv /home/user/Downloads/matrices/filename.mtx``
+4. Run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g. ``./spmv /home/user/Downloads/matrices/filename.mtx``

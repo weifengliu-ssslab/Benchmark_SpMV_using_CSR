@@ -11,7 +11,7 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 - Prerequisites
 
-1. processor: Intel Broadwell (the 5th generation processor) or above, 
+1. Processor: Intel Broadwell (the 5th generation processor) or above, 
 
 2. OS: Microsoft Windows 7 or above, 
 

@@ -25,7 +25,7 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 3. Build the project.
 
-4. Got to folder ``x64/Debug`` and run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g. ``spmv.exe D:\matrices\filename.mtx``.
+4. Got to folder ``x64/Debug`` and run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g., ``spmv.exe D:\matrices\filename.mtx``.
 
 <br><hr>
 <h3>AMD platform</h3>
@@ -44,7 +44,7 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 2. Run ``make USE_DOUBLE=0`` or ``make USE_DOUBLE=1`` for building single precision or double precision SpMV.
 
-3. Run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g. ``./spmv /home/user/Downloads/matrices/filename.mtx``.
+3. Run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g., ``./spmv /home/user/Downloads/matrices/filename.mtx``.
  
 <br><hr>
 <h3>nVidia platform</h3>
@@ -65,4 +65,4 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 3. Run ``make USE_DOUBLE=0`` or ``make USE_DOUBLE=1`` for building single precision or double precision SpMV.
 
-4. Run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g. ``./spmv /home/user/Downloads/matrices/filename.mtx``.
+4. Run the generated executable file with an argument (filename of the benchmark matrix in the Matrix Market format). E.g., ``./spmv /home/user/Downloads/matrices/filename.mtx``.

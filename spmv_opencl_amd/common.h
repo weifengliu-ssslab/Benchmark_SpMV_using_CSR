@@ -42,10 +42,15 @@ typedef float   value_type;
 // STEP should be less than THREADBUNCH
 
 #define THREADBUNCH  64
-#define THREADGROUP  256
+#define THREADGROUP  128
 
+#if USE_DOUBLE
 #define SEG_H        8
-#define STEP         15
+#define STEP         5
+#else
+#define SEG_H        16
+#define STEP         2
+#endif
 
 // timing functions
 #include <sys/time.h>

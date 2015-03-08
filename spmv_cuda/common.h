@@ -37,10 +37,15 @@ typedef float   value_type;
 #define NUM_RUN      200
 
 #define THREADBUNCH  32
-#define THREADGROUP  128
+#define THREADGROUP  160
 
+#if USE_DOUBLE
 #define SEG_H        4 // should be the power of 2
-#define STEP         15 // should be less than THREADBUNCH
+#else
+#define SEG_H        8 // should be the power of 2
+#endif
+
+#define STEP         7 // should be less than THREADBUNCH
 
 
 struct bhsparse_timer {

@@ -61,6 +61,8 @@ Our algorithm has been implemented on three heterogeneous processors from Intel,
 
 1. Make sure ``Makefile`` in folder ``spmv_cuda`` has corrected pathes. 
 
-2. Run ``make USE_DOUBLE=0`` or ``make USE_DOUBLE=1`` for building single precision or double precision SpMV.
+2. Make sure ``Makefile`` has proper shader model (e.g., ``-arch=sm_32``) for nvcc compiler.
 
-3. Run the generated executable file with an arguement (filename of the benchmark matrix in the Matrix Market format). E.g. ``./spmv /home/user/Downloads/matrices/filename.mtx``
+3. Run ``make USE_DOUBLE=0`` or ``make USE_DOUBLE=1`` for building single precision or double precision SpMV.
+
+4. Run the generated executable file with an arguement (filename of the benchmark matrix in the Matrix Market format). E.g. ``./spmv /home/user/Downloads/matrices/filename.mtx``

@@ -1,6 +1,9 @@
 # SpMV on Heterogeneous Processors using the CSR Format
 
-This is the source code of paper "Speculative Segmented Sum for Sparse Matrix-Vector Multiplication on Heterogeneous Processors" has been submitted to the journal "Parallel Computing".
+<br><hr>
+<h3>Introduction</h3>
+
+This is the source code of the paper "Speculative Segmented Sum for Sparse Matrix-Vector Multiplication on Heterogeneous Processors" has been submitted to the journal "Parallel Computing".
 
 Contact: Weifeng Liu (weifeng.liu _at_ nbi.ku.dk) and/or Brian Vinter (vinter _at_ nbi.ku.dk).
 

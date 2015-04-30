@@ -5,7 +5,7 @@
 
 This is the source code of the paper 
 
-Weifeng Liu and Brian Vinter, "Speculative Segmented Sum for Sparse Matrix-Vector Multiplication on Heterogeneous Processors". Parallel Computing, 2015. (accepted) [<a href="http://arxiv.org/pdf/1504.06474v1">pdf</a>]
+Weifeng Liu and Brian Vinter, "Speculative Segmented Sum for Sparse Matrix-Vector Multiplication on Heterogeneous Processors". Parallel Computing, 2015. (accepted April 2015) [<a href="http://arxiv.org/pdf/1504.06474v1">pdf</a>]
 
 Contact: Weifeng Liu (weifeng.liu _at_ nbi.ku.dk) and Brian Vinter (vinter _at_ nbi.ku.dk).
 
